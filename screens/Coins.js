@@ -1,9 +1,9 @@
-import { FlatList, Image, Text, View } from "react-native";
+import { FlatList, Image, Text, useColorScheme, View } from "react-native";
 import styled from "styled-components/native";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { listComics } from "../api";
+import { listCoins } from "../api";
 import Loader from "../components/Loader";
 
 const Wrapper = styled.View`
@@ -25,9 +25,11 @@ const Title = styled.Text`
 `;
 
 export default function Coins() {
+	const isDark = useColorScheme() === "dark";
+
 	const { isLoading, data, isRefetching } = useQuery({
 		queryKey: ["coins"],
-		queryFn: listComics,
+		queryFn: listCoins,
 	});
 
 	const queryClient = useQueryClient();
@@ -39,6 +41,13 @@ export default function Coins() {
 		<Loader />
 	) : data ? (
 		<FlatList
+			style={{
+				flex: 1,
+				backgroundColor: "#1e272e",
+				paddingRight: 5,
+				paddingLeft: 10,
+				paddingBottom: 10,
+			}}
 			onRefresh={onRefresh}
 			refreshing={isRefetching}
 			data={data}
@@ -51,12 +60,6 @@ export default function Coins() {
 					<Title>{item.name}</Title>
 				</Wrapper>
 			)}
-			style={{
-				flex: 1,
-				backgroundColor: "#1e272e",
-				paddingRight: 5,
-				paddingLeft: 10,
-			}}
 		/>
 	) : null;
 }
