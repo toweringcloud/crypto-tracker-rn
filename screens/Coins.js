@@ -8,8 +8,8 @@ import Loader from "../components/Loader";
 
 const Wrapper = styled.View`
 	flex: 1;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
 	margin-right: 15;
 	padding-top: 20;
 	padding-bottom: 15;
@@ -20,7 +20,7 @@ const Wrapper = styled.View`
 const Title = styled.Text`
 	margin-top: 5;
 	font-size: 16;
-	font-weight: 600;
+	font-weight: 300;
 	color: white;
 `;
 

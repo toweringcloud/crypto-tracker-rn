@@ -3,25 +3,37 @@ import styled from "styled-components/native";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { listTickers, LOGO_URL } from "../api";
+import { listTickers } from "../api";
 import Loader from "../components/Loader";
 
 const Wrapper = styled.View`
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
-	padding-top: 15;
+	margin-right: 10;
+	padding-top: 10;
+	padding-bottom: 5;
+`;
+const RightView = styled.View`
+	align-items: flex-end;
+	justify-content: center;
+	gap: 5;
+`;
+const LeftView = styled.View`
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
 `;
 const Title = styled.Text`
+	margin-left: 10px;
 	color: white;
 	font-size: 16px;
-	font-weight: 600;
-	margin-left: 10px;
+	font-weight: 300;
 `;
 const Price = styled.Text`
 	color: white;
 	font-size: 12px;
-	font-weight: 400;
+	font-weight: 200;
 `;
 const Ratio = styled.Text`
 	color: ${(props) => (props.value > 0 ? "red" : "blue")};
@@ -49,7 +61,7 @@ export default function Prices() {
 			style={{
 				flex: 1,
 				backgroundColor: "#1e272e",
-				paddingRight: 10,
+				paddingRight: 5,
 				paddingLeft: 10,
 				paddingBottom: 10,
 			}}
@@ -59,7 +71,7 @@ export default function Prices() {
 			ItemSeparatorComponent={() => (
 				<View
 					style={{
-						height: 10,
+						height: 5,
 						borderBottomWidth: 0.5,
 						borderBottomColor: "rgba(255, 255, 255, 0.2)",
 					}}
@@ -68,34 +80,21 @@ export default function Prices() {
 			keyExtractor={(item) => item.id + ""}
 			renderItem={({ item }) => (
 				<Wrapper>
-					<View
-						style={{ flexDirection: "row", alignItems: "center" }}
-					>
-						{/* <Image
-							style={{
-								width: 30,
-								height: 30,
-								borderRadius: 15,
-								marginRight: 10,
-							}}
-							source={{
-								uri: `${LOGO_URL}/${item.symbol.toLowerCase()}`,
-							}}
-						/> */}
+					<LeftView>
 						<FontAwesome6
 							name="coins"
 							color={"#26aee6"}
 							size={25}
 						/>
 						<Title>{item.name}</Title>
-					</View>
-					<View style={{ alignItems: "flex-end" }}>
+					</LeftView>
+					<RightView>
 						<Price>{item.quotes.USD.price.toFixed()}</Price>
 						<Ratio value={item.quotes.USD.percent_change_24h}>
 							{item.quotes.USD.percent_change_24h > 0 ? "▲" : "▼"}{" "}
 							{item.quotes.USD.percent_change_24h}%
 						</Ratio>
-					</View>
+					</RightView>
 				</Wrapper>
 			)}
 		/>

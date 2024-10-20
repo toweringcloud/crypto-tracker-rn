@@ -19,3 +19,10 @@ export const listTickers = () =>
 				json.filter((ticker) => ticker.circulating_supply !== 0)
 			)
 	);
+
+export const listNews = () =>
+	fetch(
+		"https://hn.algolia.com/api/v1/search_by_date?query=cryptocurrency&tags=story&numericFilters=points>20"
+	)
+		.then((res) => res.json())
+		.then((json) => json.hits);
