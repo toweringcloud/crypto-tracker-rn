@@ -1,12 +1,13 @@
-import { FlatList, Image, Text, useColorScheme, View } from "react-native";
+import { FlatList, useColorScheme, View } from "react-native";
 import styled from "styled-components/native";
 import { FontAwesome6 } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { listCoins } from "../api";
 import Loader from "../components/Loader";
 
-const Wrapper = styled.View`
+const Wrapper = styled.TouchableOpacity`
 	flex: 1;
 	align-items: center;
 	justify-content: center;
@@ -21,11 +22,18 @@ const Title = styled.Text`
 	margin-top: 5;
 	font-size: 16;
 	font-weight: 300;
-	color: white;
+	color: ${(props) => (props.isDark ? "yellow" : "white")};
 `;
 
 export default function Coins() {
 	const isDark = useColorScheme() === "dark";
+	const navigation = useNavigation();
+	const goToDetail = (item) => {
+		navigation.navigate("Stack", {
+			screen: "Detail",
+			params: { title: item.name, id: item.id },
+		});
+	};
 
 	const { isLoading, data, isRefetching } = useQuery({
 		queryKey: ["coins"],
@@ -55,9 +63,9 @@ export default function Coins() {
 			ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
 			keyExtractor={(item) => item.id + ""}
 			renderItem={({ item }) => (
-				<Wrapper>
+				<Wrapper onPress={() => goToDetail(item)}>
 					<FontAwesome6 name="coins" color={"#26aee6"} size={30} />
-					<Title>{item.name}</Title>
+					<Title isDark={isDark}>{item.name}</Title>
 				</Wrapper>
 			)}
 		/>

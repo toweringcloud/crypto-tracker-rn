@@ -1,12 +1,5 @@
 import * as WebBrowser from "expo-web-browser";
-import {
-	FlatList,
-	Image,
-	Text,
-	TouchableOpacity,
-	useColorScheme,
-	View,
-} from "react-native";
+import { FlatList, useColorScheme, View } from "react-native";
 import styled from "styled-components/native";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 

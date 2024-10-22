@@ -6,7 +6,7 @@ import { StatusBar } from "expo-status-bar";
 
 import { darkTheme, lightTheme } from "./styled";
 import Preload from "./Preload";
-import Tabs from "./navigations/Tabs";
+import Root from "./navigations/Root";
 
 export default function App() {
 	Preload();
@@ -17,7 +17,7 @@ export default function App() {
 		<QueryClientProvider client={queryClient}>
 			<ThemeProvider theme={isDark ? darkTheme : lightTheme}>
 				<NavigationContainer>
-					<Tabs />
+					<Root />
 					<StatusBar style={"light"} />
 				</NavigationContainer>
 			</ThemeProvider>

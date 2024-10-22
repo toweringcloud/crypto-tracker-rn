@@ -1,4 +1,4 @@
-import { FlatList, Image, Text, useColorScheme, View } from "react-native";
+import { FlatList, useColorScheme, View } from "react-native";
 import styled from "styled-components/native";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";

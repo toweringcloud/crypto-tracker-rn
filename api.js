@@ -11,6 +11,13 @@ export const listCoins = () =>
 		)
 	);
 
+export const infoCoin = ({ queryKey }) => {
+	const [_, query] = queryKey;
+	return fetch(`https://api.coinpaprika.com/v1/coins/${query}`).then((res) =>
+		res.json()
+	);
+};
+
 export const listTickers = () =>
 	fetch("https://api.coinpaprika.com/v1/tickers").then((res) =>
 		res
