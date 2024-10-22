@@ -1,7 +1,7 @@
 import * as WebBrowser from "expo-web-browser";
 import React, { useEffect } from "react";
-import { Text } from "react-native";
 import styled from "styled-components/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 
 import Loader from "../components/Loader";
@@ -62,20 +62,18 @@ const openWebLink = async (url) => {
 	await WebBrowser.openBrowserAsync(url);
 };
 
-export default function Detail({
-	navigation: { setOptions },
-	route: {
-		params: { title, id },
-	},
-}) {
+export default function Detail() {
+	const route = useRoute();
+	const navigation = useNavigation();
+
 	const { isLoading, data } = useQuery({
-		queryKey: ["coins", id],
+		queryKey: ["coins", route.params["id"]],
 		queryFn: infoCoin,
 	});
 
 	useEffect(() => {
-		setOptions({
-			title,
+		navigation.setOptions({
+			headerTitle: route.params["title"],
 		});
 	}, []);
 
@@ -84,7 +82,7 @@ export default function Detail({
 	) : data ? (
 		<Container>
 			<Wrapper>
-				<Title>About {title}</Title>
+				<Title>About {route.params["title"]}</Title>
 				<Overview>{data.description}</Overview>
 			</Wrapper>
 			<Wrapper>
@@ -95,7 +93,7 @@ export default function Detail({
 						<LinkBtn
 							onPress={() => openWebLink(data.links[item][0])}
 						>
-							<Text>👉</Text>
+							👉
 						</LinkBtn>
 					</LinkInfo>
 				))}
@@ -106,7 +104,7 @@ export default function Detail({
 					<LinkInfo>
 						<LinkName>{item.type}</LinkName>
 						<LinkBtn onPress={() => openWebLink(item.url)}>
-							<Text>👉</Text>
+							👉
 						</LinkBtn>
 					</LinkInfo>
 				))}

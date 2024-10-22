@@ -12,9 +12,10 @@ const Stack = () => (
 			headerStyle: {
 				backgroundColor: "#353d43",
 			},
+			headerTintColor: "white",
 			headerTitleAlign: "center",
 			headerTitleStyle: {
-				color: "white",
+				color: "#fd79a8",
 			},
 		}}
 	>
