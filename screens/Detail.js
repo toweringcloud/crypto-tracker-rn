@@ -1,6 +1,8 @@
 import * as WebBrowser from "expo-web-browser";
 import React, { useEffect } from "react";
+import { Platform, Share, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 
@@ -71,11 +73,42 @@ export default function Detail() {
 		queryFn: infoCoin,
 	});
 
+	const onShare = async () => {
+		const isAndroid = Platform.OS === "android";
+		const homepage = data.links["website"][0];
+		try {
+			if (isAndroid) {
+				await Share.share({
+					message: homepage,
+					title: route.params["title"],
+				});
+			} else {
+				await Share.share({
+					url: homepage,
+					title: route.params["title"],
+				});
+			}
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
 	useEffect(() => {
 		navigation.setOptions({
 			headerTitle: route.params["title"],
 		});
 	}, []);
+
+	useEffect(() => {
+		if (!data) return;
+		navigation.setOptions({
+			headerRight: () => (
+				<TouchableOpacity onPress={onShare}>
+					<FontAwesome5 name="share" color="white" size={18} />
+				</TouchableOpacity>
+			),
+		});
+	}, [data]);
 
 	return isLoading ? (
 		<Loader />
@@ -93,7 +126,11 @@ export default function Detail() {
 						<LinkBtn
 							onPress={() => openWebLink(data.links[item][0])}
 						>
-							👉
+							<FontAwesome5
+								name="external-link-alt"
+								color="white"
+								size={12}
+							/>
 						</LinkBtn>
 					</LinkInfo>
 				))}
@@ -104,7 +141,11 @@ export default function Detail() {
 					<LinkInfo>
 						<LinkName>{item.type}</LinkName>
 						<LinkBtn onPress={() => openWebLink(item.url)}>
-							👉
+							<FontAwesome5
+								name="external-link-alt"
+								color="white"
+								size={12}
+							/>
 						</LinkBtn>
 					</LinkInfo>
 				))}
