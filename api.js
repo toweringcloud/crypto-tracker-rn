@@ -1,5 +1,9 @@
-export const LOGO_URL = "https://coinicons-api.vercel.app/api/icon";
+// export const LOGO_URL = "https://coinicons-api.vercel.app/api/icon";
 // https://coinicons-api.vercel.app/api/icon/BTC -> 404 Error
+
+export const LOGO_URL = "https://cryptoicon-api.pages.dev/api/icon";
+// https://cryptoicon-api.pages.dev/api/icon/btc
+// https://cryptoicon-api.pages.dev/icons/128/color/btc.png
 
 export const listCoins = () =>
 	fetch("https://api.coinpaprika.com/v1/coins").then((res) =>

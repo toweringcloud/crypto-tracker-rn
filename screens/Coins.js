@@ -1,10 +1,9 @@
 import { FlatList, useColorScheme, View } from "react-native";
 import styled from "styled-components/native";
-import { FontAwesome6 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { listCoins } from "../api";
+import { listCoins, LOGO_URL } from "../api";
 import Loader from "../components/Loader";
 
 const Wrapper = styled.TouchableOpacity`
@@ -17,6 +16,12 @@ const Wrapper = styled.TouchableOpacity`
 	border: 1px solid #26aee6;
 	border-radius: 10px;
 	background-color: #353d43;
+`;
+const Symbol = styled.Image`
+	height: 30px;
+	width: 30px;
+	margin-right: 10px;
+	border-radius: 15px;
 `;
 const Title = styled.Text`
 	margin-top: 5;
@@ -31,7 +36,7 @@ export default function Coins() {
 	const goToDetail = (item) => {
 		navigation.navigate("Stack", {
 			screen: "Detail",
-			params: { title: item.name, id: item.id },
+			params: { id: item.id, code: item.symbol, title: item.name },
 		});
 	};
 
@@ -64,7 +69,11 @@ export default function Coins() {
 			keyExtractor={(item) => item.id + ""}
 			renderItem={({ item }) => (
 				<Wrapper onPress={() => goToDetail(item)}>
-					<FontAwesome6 name="coins" color={"#26aee6"} size={30} />
+					<Symbol
+						source={{
+							uri: `${LOGO_URL}/${item.symbol.toLowerCase()}`,
+						}}
+					/>
 					<Title isDark={isDark}>{item.name}</Title>
 				</Wrapper>
 			)}

@@ -3,7 +3,7 @@ import styled from "styled-components/native";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { listTickers } from "../api";
+import { listTickers, LOGO_URL } from "../api";
 import Loader from "../components/Loader";
 
 const Wrapper = styled.View`
@@ -23,6 +23,13 @@ const LeftView = styled.View`
 	flex-direction: row;
 	align-items: center;
 	justify-content: flex-start;
+	gap: 5;
+`;
+const Symbol = styled.Image`
+	height: 30px;
+	width: 30px;
+	margin-right: 10px;
+	border-radius: 15px;
 `;
 const Title = styled.Text`
 	margin-left: 10px;
@@ -81,10 +88,10 @@ export default function Prices() {
 			renderItem={({ item }) => (
 				<Wrapper>
 					<LeftView>
-						<FontAwesome6
-							name="coins"
-							color={"#26aee6"}
-							size={25}
+						<Symbol
+							source={{
+								uri: `${LOGO_URL}/${item.symbol.toLowerCase()}`,
+							}}
 						/>
 						<Title>{item.name}</Title>
 					</LeftView>

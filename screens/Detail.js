@@ -7,7 +7,25 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 
 import Loader from "../components/Loader";
-import { infoCoin } from "../api";
+import { infoCoin, LOGO_URL } from "../api";
+
+const Header = styled.View`
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 5;
+`;
+const Symbol = styled.Image`
+	height: 30px;
+	width: 30px;
+	margin-right: 10px;
+	border-radius: 15px;
+`;
+const Title = styled.Text`
+	color: #fd79a8;
+	font-size: 18px;
+	font-weight: 600;
+`;
 
 const Container = styled.ScrollView`
 	flex: 1;
@@ -15,7 +33,6 @@ const Container = styled.ScrollView`
 	padding: 10px;
 	gap: 10px;
 `;
-
 const Wrapper = styled.View`
 	align-items: flex-start;
 	justify-content: center;
@@ -24,14 +41,12 @@ const Wrapper = styled.View`
 	padding-bottom: 10;
 	background-color: #353d43;
 `;
-
-const Title = styled.Text`
+const Division = styled.Text`
 	margin-top: 5;
 	font-size: 16;
 	font-weight: 500;
 	color: white;
 `;
-
 const Overview = styled.Text`
 	margin-top: 10;
 	font-size: 12;
@@ -51,13 +66,11 @@ const LinkInfo = styled.View`
 	border-bottom-width: 0.5;
 	border-bottom-color: rgba(255, 255, 255, 0.2);
 `;
-
 const LinkName = styled.Text`
 	color: white;
 	font-size: 10px;
 	font-weight: 200;
 `;
-
 const LinkBtn = styled.TouchableOpacity``;
 
 const openWebLink = async (url) => {
@@ -73,7 +86,7 @@ export default function Detail() {
 		queryFn: infoCoin,
 	});
 
-	const onShare = async () => {
+	const shareMedia = async () => {
 		const isAndroid = Platform.OS === "android";
 		const homepage = data.links["website"][0];
 		try {
@@ -93,9 +106,15 @@ export default function Detail() {
 		}
 	};
 
+	const cyptoIcon = `${LOGO_URL}/${route.params["code"].toLowerCase()}`;
 	useEffect(() => {
 		navigation.setOptions({
-			headerTitle: route.params["title"],
+			headerTitle: () => (
+				<Header>
+					<Symbol source={{ uri: cyptoIcon }} />
+					<Title>{route.params["title"]}</Title>
+				</Header>
+			),
 		});
 	}, []);
 
@@ -103,7 +122,10 @@ export default function Detail() {
 		if (!data) return;
 		navigation.setOptions({
 			headerRight: () => (
-				<TouchableOpacity onPress={onShare}>
+				<TouchableOpacity
+					onPress={shareMedia}
+					style={{ marginRight: 15 }}
+				>
 					<FontAwesome5 name="share" color="white" size={18} />
 				</TouchableOpacity>
 			),
@@ -115,11 +137,11 @@ export default function Detail() {
 	) : data ? (
 		<Container>
 			<Wrapper>
-				<Title>About {route.params["title"]}</Title>
+				<Division>About {route.params["title"]}</Division>
 				<Overview>{data.description}</Overview>
 			</Wrapper>
 			<Wrapper>
-				<Title>Links</Title>
+				<Division>Links</Division>
 				{Object.keys(data.links).map((item) => (
 					<LinkInfo>
 						<LinkName>{item}</LinkName>
@@ -136,7 +158,7 @@ export default function Detail() {
 				))}
 			</Wrapper>
 			<Wrapper>
-				<Title>Links Plus</Title>
+				<Division>Links Plus</Division>
 				{data.links_extended.map((item) => (
 					<LinkInfo>
 						<LinkName>{item.type}</LinkName>
