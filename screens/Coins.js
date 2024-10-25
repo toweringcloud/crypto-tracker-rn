@@ -47,7 +47,7 @@ export default function Coins() {
 
 	const queryClient = useQueryClient();
 	const onRefresh = async () => {
-		queryClient.refetchQueries({ queryKey: ["coins"] });
+		await queryClient.refetchQueries({ queryKey: ["coins"] });
 	};
 
 	return isLoading ? (

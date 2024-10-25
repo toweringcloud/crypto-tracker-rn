@@ -58,7 +58,7 @@ export default function Prices() {
 
 	const queryClient = useQueryClient();
 	const onRefresh = async () => {
-		queryClient.refetchQueries({ queryKey: ["tickers"] });
+		await queryClient.refetchQueries({ queryKey: ["tickers"] });
 	};
 
 	return isLoading ? (

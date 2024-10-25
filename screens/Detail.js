@@ -13,7 +13,6 @@ const Header = styled.View`
 	flex-direction: row;
 	align-items: center;
 	justify-content: flex-start;
-	gap: 5;
 `;
 const Symbol = styled.Image`
 	height: 30px;

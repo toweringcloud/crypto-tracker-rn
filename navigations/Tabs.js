@@ -1,10 +1,12 @@
 import React from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+import colors from "../colors";
 import Coins from "../screens/Coins";
 import Prices from "../screens/Prices";
 import News from "../screens/News";
-import colors from "../colors";
+import Discover from "../screens/Discover";
 
 const Tab = createBottomTabNavigator();
 
@@ -67,6 +69,15 @@ export default function Tabs() {
 							color={color}
 							size={size}
 						/>
+					),
+				}}
+			/>
+			<Tab.Screen
+				name="Discover"
+				component={Discover}
+				options={{
+					tabBarIcon: ({ color, size }) => (
+						<FontAwesome5 name="heart" color={color} size={size} />
 					),
 				}}
 			/>

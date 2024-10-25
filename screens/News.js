@@ -61,7 +61,7 @@ export default function News() {
 
 	const queryClient = useQueryClient();
 	const onRefresh = async () => {
-		queryClient.refetchQueries({ queryKey: ["news"] });
+		await queryClient.refetchQueries({ queryKey: ["news"] });
 	};
 
 	const openWebLink = async (url) => {
