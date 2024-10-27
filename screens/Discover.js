@@ -1,35 +1,52 @@
-import { useAssets } from "expo-asset";
 import { useRef, useState } from "react";
-import { Animated, PanResponder, View } from "react-native";
+import { Animated, Easing, PanResponder, View } from "react-native";
 import styled from "styled-components/native";
-import { FontAwesome5 } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 
 import { listCoins, LOGO_URL } from "../api";
 import Loader from "../components/Loader";
 
+const BLACK = "#1e272e";
+const GREY = "#485460";
+const GREEN = "#2ecc71";
+const RED = "#e74c3c";
+
 const Container = styled.View`
+	flex: 1;
+	background-color: ${BLACK};
+`;
+const Edge = styled.View`
 	flex: 1;
 	justify-content: center;
 	align-items: center;
-	background-color: #1e272e;
 `;
-
-const CardContainer = styled.View`
+const Center = styled.View`
 	flex: 3;
 	justify-content: center;
 	align-items: center;
+	z-index: 10;
 `;
-const Card = styled(Animated.createAnimatedComponent(View))`
-	position: absolute;
-	width: 300px;
-	height: 400px;
+
+const WordContainer = styled(Animated.createAnimatedComponent(View))`
+	width: 100px;
+	height: 100px;
 	justify-content: center;
 	align-items: center;
-	gap: 10px;
-	border-radius: 12px;
-	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
-	background-color: #fd79a8;
+	background-color: ${GREY};
+	border-radius: 50px;
+`;
+const Word = styled.Text`
+	font-size: 38px;
+	font-weight: 500;
+	color: ${(props) => props.color};
+`;
+
+const IconCard = styled(Animated.createAnimatedComponent(View))`
+	position: absolute;
+	z-index: 10;
+	background-color: transparent;
+	align-items: center;
+	gap: 10;
 `;
 const Symbol = styled.Image`
 	height: 150px;
@@ -40,86 +57,89 @@ const Symbol = styled.Image`
 `;
 const Title = styled.Text`
 	color: white;
-	font-size: 24px;
+	font-size: 36px;
 	font-weight: 600;
 `;
 
-const ActionContainer = styled.View`
-	flex: 1;
-	flex-direction: row;
-`;
-const Action = styled.TouchableOpacity`
-	margin: 0px 10px;
-`;
-
 export default function App() {
+	// Values
+	const opacity = useRef(new Animated.Value(1)).current;
 	const scale = useRef(new Animated.Value(1)).current;
-	const position = useRef(new Animated.Value(0)).current;
-	const rotation = position.interpolate({
-		inputRange: [-250, 250],
-		outputRange: ["-15deg", "15deg"],
+	const position = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+	const scaleOne = position.y.interpolate({
+		inputRange: [-300, -80],
+		outputRange: [2, 1],
+		extrapolate: "clamp",
 	});
-	const secondScale = position.interpolate({
-		inputRange: [-300, 0, 300],
-		outputRange: [1, 0.7, 1],
+	const scaleTwo = position.y.interpolate({
+		inputRange: [80, 300],
+		outputRange: [1, 2],
 		extrapolate: "clamp",
 	});
 
+	// Animations
+	const onPressIn = Animated.spring(scale, {
+		toValue: 0.9,
+		useNativeDriver: true,
+	});
 	const onPressOut = Animated.spring(scale, {
 		toValue: 1,
 		useNativeDriver: true,
 	});
-	const onPressIn = Animated.spring(scale, {
-		toValue: 0.95,
-		useNativeDriver: true,
-	});
-	const goCenter = Animated.spring(position, {
+	const goHome = Animated.spring(position, {
 		toValue: 0,
 		useNativeDriver: true,
 	});
-	const goLeft = Animated.spring(position, {
-		toValue: -500,
-		tension: 5,
+	const onDropScale = Animated.timing(scale, {
+		toValue: 0,
+		duration: 50,
+		easing: Easing.linear,
 		useNativeDriver: true,
-		restDisplacementThreshold: 100,
-		restSpeedThreshold: 100,
 	});
-	const goRight = Animated.spring(position, {
-		toValue: 500,
-		tension: 5,
+	const onDropOpacity = Animated.timing(opacity, {
+		toValue: 0,
+		duration: 50,
+		easing: Easing.linear,
 		useNativeDriver: true,
 	});
 
+	// Pan Responders
 	const panResponder = useRef(
 		PanResponder.create({
 			onStartShouldSetPanResponder: () => true,
-			onPanResponderMove: (_, { dx }) => {
-				position.setValue(dx);
+			onPanResponderMove: (_, { dx, dy }) => {
+				console.log(dy);
+				position.setValue({ x: dx, y: dy });
 			},
-			onPanResponderGrant: () => onPressIn.start(),
-			onPanResponderRelease: (_, { dx }) => {
-				if (dx < -250) {
-					goLeft.start(onDismiss);
-				} else if (dx > 250) {
-					goRight.start(onDismiss);
+			onPanResponderGrant: () => {
+				onPressIn.start();
+			},
+			onPanResponderRelease: (_, { dy }) => {
+				if (dy < -250 || dy > 250) {
+					Animated.sequence([
+						Animated.parallel([onDropScale, onDropOpacity]),
+						Animated.timing(position, {
+							toValue: 0,
+							duration: 50,
+							easing: Easing.linear,
+							useNativeDriver: true,
+						}),
+					]).start(nextIcon);
 				} else {
-					Animated.parallel([onPressOut, goCenter]).start();
+					Animated.parallel([onPressOut, goHome]).start();
 				}
 			},
 		})
 	).current;
 
+	// State
 	const [index, setIndex] = useState(0);
-	const onDismiss = () => {
-		scale.setValue(1);
+	const nextIcon = () => {
 		setIndex((prev) => prev + 1);
-		position.setValue(0);
-	};
-	const dislike = () => {
-		goLeft.start(onDismiss);
-	};
-	const like = () => {
-		goRight.start(onDismiss);
+		Animated.parallel([
+			Animated.spring(scale, { toValue: 1, useNativeDriver: true }),
+			Animated.spring(opacity, { toValue: 1, useNativeDriver: true }),
+		]).start();
 	};
 
 	const { isLoading, data } = useQuery({
@@ -127,9 +147,9 @@ export default function App() {
 		queryFn: listCoins,
 	});
 
-	// Preload images with the useAssets hook
+	// Preload image path of icons
 	let icons = [];
-	if (data)
+	if (data) {
 		data.map((item) => {
 			let asset = {
 				name: item.name,
@@ -137,39 +157,37 @@ export default function App() {
 			};
 			icons.push(asset);
 		});
-	// const [assets] = useAssets(icons);
+	}
 
 	return isLoading ? (
 		<Loader />
 	) : (
 		<Container>
-			<CardContainer>
-				<Card style={{ transform: [{ scale: secondScale }] }}>
-					<Symbol source={{ uri: icons[index + 1].path }} />
-					<Title>{icons[index + 1].name}</Title>
-				</Card>
-				<Card
+			<Edge>
+				<WordContainer style={{ transform: [{ scale: scaleOne }] }}>
+					<Word color={GREEN}>사다</Word>
+				</WordContainer>
+			</Edge>
+			<Center>
+				<IconCard
 					{...panResponder.panHandlers}
 					style={{
+						opacity,
 						transform: [
+							...position.getTranslateTransform(),
 							{ scale },
-							{ translateX: position },
-							{ rotateZ: rotation },
 						],
 					}}
 				>
 					<Symbol source={{ uri: icons[index].path }} />
 					<Title>{icons[index].name}</Title>
-				</Card>
-			</CardContainer>
-			<ActionContainer>
-				<Action onPress={dislike}>
-					<FontAwesome5 name="heart-broken" color="white" size={58} />
-				</Action>
-				<Action onPress={like}>
-					<FontAwesome5 name="heart" color="white" size={58} />
-				</Action>
-			</ActionContainer>
+				</IconCard>
+			</Center>
+			<Edge>
+				<WordContainer style={{ transform: [{ scale: scaleTwo }] }}>
+					<Word color={RED}>팔다</Word>
+				</WordContainer>
+			</Edge>
 		</Container>
 	);
 }
