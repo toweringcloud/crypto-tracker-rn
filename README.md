@@ -4,7 +4,7 @@ crypto ranking and information using react native
 
 ## features
 
-### coin ranking
+### crypto ranking
 
 -   crypto ranking
     ![Alt text](https://github.com/toweringcloud/crypto-ranking-rn/blob/main/demo/snapshot0.png?raw=true)
@@ -12,7 +12,7 @@ crypto ranking and information using react native
 -   crypto detail
     ![Alt text](https://github.com/toweringcloud/crypto-ranking-rn/blob/main/demo/snapshot1.png?raw=true)
 
-### coin information
+### crypto information
 
 -   crpyto prices
     ![Alt text](https://github.com/toweringcloud/crypto-ranking-rn/blob/main/demo/snapshot2.png?raw=true)
